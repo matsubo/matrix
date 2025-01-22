@@ -5,6 +5,12 @@ import { useEffect, useRef } from "react"
 const MatrixRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  const secretMessage = "おまえのかーちゃんでーべそ"
+  const encryptedMessage = secretMessage
+    .split("")
+    .map((char) => String.fromCharCode(char.charCodeAt(0) + 1))
+    .join("")
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -37,7 +43,13 @@ const MatrixRain = () => {
       ctx.font = fontSize + "px monospace"
 
       for (let i = 0; i < rainDrops.length; i++) {
-        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length))
+        let text
+        if (i % 50 === 0 && Math.floor(rainDrops[i]) % 20 === 0) {
+          const charIndex = Math.floor(rainDrops[i] / 20) % encryptedMessage.length
+          text = encryptedMessage[charIndex]
+        } else {
+          text = alphabet.charAt(Math.floor(Math.random() * alphabet.length))
+        }
         const isKatakana = text.charCodeAt(0) >= 0x30a0 && text.charCodeAt(0) <= 0x30ff
         const shouldReverse = isKatakana && Math.random() < 0.8
 
